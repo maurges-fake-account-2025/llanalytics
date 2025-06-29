@@ -22,11 +22,10 @@ import { WavyBackground } from './ui/wavy-background'
 import { PlaceholdersAndVanishInput } from './ui/placeholders-and-vanish-input'
 
 interface LandingPageProps {
-  onLoginSuccess?: () => void;
-  onLogin?: (login: string, password: string) => Promise<void>;
+  onLogin: (username: string, password: string) => Promise<void>
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess, onLogin }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
   const [email, setEmail] = useState('')
   const [showWaitlistModal, setShowWaitlistModal] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState<string>('')
@@ -180,7 +179,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess, onLogin }) =>
   return (
     <div className="min-h-screen bg-white">
       {/* Header Component */}
-      <Header onLoginSuccess={onLoginSuccess || (() => {})} />
+      <Header onLogin={onLogin} />
 
       {/* Hero Section */}
       <section className="pt-24 pb-16 bg-gradient-to-br from-slate-50 via-white to-gray-50 overflow-hidden">

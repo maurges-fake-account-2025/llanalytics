@@ -3,10 +3,10 @@ import { LogIn } from 'lucide-react'
 import LoginModal from './LoginModal'
 
 interface HeaderProps {
-  onLoginSuccess: () => void
+  onLogin: (username: string, password: string) => Promise<void>
 }
 
-const Header: React.FC<HeaderProps> = ({ onLoginSuccess }) => {
+const Header: React.FC<HeaderProps> = ({ onLogin }) => {
   const [showLoginModal, setShowLoginModal] = useState(false)
 
   return (
@@ -47,7 +47,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginSuccess }) => {
       <LoginModal 
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
-        onLoginSuccess={onLoginSuccess}
+        onLogin={onLogin}
       />
     </>
   )
