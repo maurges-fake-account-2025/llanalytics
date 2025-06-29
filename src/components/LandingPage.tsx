@@ -17,10 +17,16 @@ import {
   Eye
 } from 'lucide-react'
 import WaitlistModal from './WaitlistModal'
+import Header from './Header'
 import { WavyBackground } from './ui/wavy-background'
 import { PlaceholdersAndVanishInput } from './ui/placeholders-and-vanish-input'
 
-const LandingPage: React.FC = () => {
+interface LandingPageProps {
+  onLoginSuccess?: () => void;
+  onLogin?: (login: string, password: string) => Promise<void>;
+}
+
+const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess, onLogin }) => {
   const [email, setEmail] = useState('')
   const [showWaitlistModal, setShowWaitlistModal] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState<string>('')
@@ -173,6 +179,9 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Header Component */}
+      <Header onLoginSuccess={onLoginSuccess || (() => {})} />
+
       {/* Hero Section */}
       <section className="pt-24 pb-16 bg-gradient-to-br from-slate-50 via-white to-gray-50 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
