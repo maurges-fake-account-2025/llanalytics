@@ -1,11 +1,9 @@
 import React from 'react';
 import { 
   BarChart3, 
-  Bot, 
-  Target,
-  TrendingUp
+  TrendingUp,
+  Target
 } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
 
 interface SidebarProps {
   activeModule: string;
@@ -19,11 +17,6 @@ const menuItems = [
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeModule, onModuleChange }) => {
-  const { user } = useAuth();
-  
-  const userName = user?.name || 'Sarah Mitchell';
-  const userPlan = user?.plan || 'Starter Plan';
-  
   // Get user initials for avatar
   const getUserInitials = (name: string) => {
     return name
@@ -34,6 +27,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeModule, onModuleChange }
       .slice(0, 2);
   };
 
+  const userName = 'Sarah Mitchell';
+  const userPlan = 'Starter Plan';
   const userInitials = getUserInitials(userName);
 
   return (

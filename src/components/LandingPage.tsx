@@ -17,15 +17,14 @@ import {
   Eye
 } from 'lucide-react'
 import WaitlistModal from './WaitlistModal'
-import Header from './Header'
 import { WavyBackground } from './ui/wavy-background'
 import { PlaceholdersAndVanishInput } from './ui/placeholders-and-vanish-input'
 
 interface LandingPageProps {
-  onLogin: (login: string, password: string) => Promise<void>;
+  onOpenDashboard: () => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onOpenDashboard }) => {
   const [email, setEmail] = useState('')
   const [showWaitlistModal, setShowWaitlistModal] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState<string>('')
@@ -71,19 +70,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
     setSelectedPlan(planName)
     setShowWaitlistModal(true)
   }
-
-  // Handle login from header - just pass it through
-  const handleLogin = async (login: string, password: string) => {
-    console.log('LandingPage: handleLogin called with:', { login, password });
-    try {
-      await onLogin(login, password);
-      console.log('LandingPage: Login successful');
-      // No need to do anything else - the App component will handle the redirect
-    } catch (error) {
-      console.error('LandingPage: Login failed:', error);
-      throw error; // Re-throw to let the modal handle the error display
-    }
-  };
 
   const features = [
     {
@@ -191,8 +177,31 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header Component */}
-      <Header onLogin={handleLogin} />
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
+              <img 
+                src="/image_2025-06-28_18-28-21 (1).png" 
+                alt="Promptaize Logo" 
+                className="h-10 w-auto"
+              />
+              <span className="text-xl font-bold text-gray-900">Promptaize</span>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={onOpenDashboard}
+                className="flex items-center space-x-2 px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium"
+              >
+                <BarChart3 className="h-4 w-4" />
+                <span>Open Dashboard</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
 
       {/* Hero Section */}
       <section className="pt-24 pb-16 bg-gradient-to-br from-slate-50 via-white to-gray-50 overflow-hidden">
@@ -257,13 +266,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
                 </div>
               </div>
 
-              {/* CTA Button */}
-              <div className="max-w-md">
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 max-w-md">
+                <button
+                  onClick={onOpenDashboard}
+                  className="flex-1 px-6 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-xl hover:from-orange-700 hover:to-red-700 transition-all font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2"
+                >
+                  <BarChart3 className="h-5 w-5" />
+                  <span>Try Dashboard</span>
+                </button>
                 <button
                   onClick={handleGetStarted}
-                  className="w-full px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-xl hover:from-orange-700 hover:to-red-700 transition-all font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="flex-1 px-6 py-4 bg-white border-2 border-orange-600 text-orange-600 rounded-xl hover:bg-orange-50 transition-all font-semibold text-lg"
                 >
-                  Optimize your search visibility now
+                  Join Waitlist
                 </button>
               </div>
             </div>
@@ -614,12 +630,21 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
             </div>
           </div>
 
-          <button 
-            onClick={handleGetStarted}
-            className="bg-white text-black px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all shadow-lg"
-          >
-            Join Waitlist
-          </button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button 
+              onClick={onOpenDashboard}
+              className="bg-white text-black px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all shadow-lg flex items-center justify-center space-x-2"
+            >
+              <BarChart3 className="h-5 w-5" />
+              <span>Try Dashboard</span>
+            </button>
+            <button 
+              onClick={handleGetStarted}
+              className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-black transition-all"
+            >
+              Join Waitlist
+            </button>
+          </div>
         </WavyBackground>
       </section>
 

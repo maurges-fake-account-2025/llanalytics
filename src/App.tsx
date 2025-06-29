@@ -8,10 +8,9 @@ import { Optimization } from './components/Optimization/Optimization';
 import { PersonalSettings } from './components/PersonalSettings/PersonalSettings';
 import LandingPage from './components/LandingPage';
 import { AnalysisProvider } from './contexts/AnalysisContext';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, loading: authLoading, login, logout, error: authError, clearError } = useAuth();
+  const [showDashboard, setShowDashboard] = useState(false);
   const [activeModule, setActiveModule] = useState('dashboard');
   const [brandName, setBrandName] = useState('Hermès');
   const [url, setUrl] = useState('hermes.com');
@@ -25,22 +24,13 @@ const AppContent: React.FC = () => {
     }
   };
 
-  const handleLogin = async (username: string, password: string) => {
-    clearError();
-    try {
-      await login(username, password);
-      // The auth context will automatically update isAuthenticated
-      // and this component will re-render to show the dashboard
-      console.log('Login successful - user will be redirected to dashboard');
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw error; // Re-throw to let the calling component handle the error
-    }
+  const handleOpenDashboard = () => {
+    setShowDashboard(true);
   };
 
-  const handleLogout = async () => {
-    await logout();
-    // Reset app state on logout
+  const handleBackToLanding = () => {
+    setShowDashboard(false);
+    // Reset app state when going back to landing
     setActiveModule('dashboard');
     setBrandName('Hermès');
     setUrl('hermes.com');
@@ -64,30 +54,18 @@ const AppContent: React.FC = () => {
     }
   };
 
-  // Show loading spinner during auth check
-  if (authLoading) {
-    return (
-      <div className="h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-orange-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
+  // Show landing page if dashboard is not open
+  if (!showDashboard) {
+    return <LandingPage onOpenDashboard={handleOpenDashboard} />;
   }
 
-  // Show landing page if not authenticated
-  if (!isAuthenticated) {
-    return <LandingPage onLogin={handleLogin} />;
-  }
-
-  // Show main application if authenticated
+  // Show main application if dashboard is open
   return (
     <AnalysisProvider>
       <div className="h-screen bg-gray-50 flex">
         <Sidebar activeModule={activeModule} onModuleChange={setActiveModule} />
         <div className="flex-1 flex flex-col overflow-hidden">
-          <Header onNavigateToSettings={handleNavigateToSettings} onLogout={handleLogout} />
+          <Header onNavigateToSettings={handleNavigateToSettings} onBackToLanding={handleBackToLanding} />
           {activeModule !== 'personal-settings' && (
             <BrandSelector
               brandName={brandName}
@@ -110,11 +88,7 @@ const AppContent: React.FC = () => {
 };
 
 function App() {
-  return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
-  );
+  return <AppContent />;
 }
 
 export default App;

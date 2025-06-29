@@ -1,24 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Lock, CreditCard, LogOut, LogIn } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import { LoginModal } from '../Auth/LoginModal';
+import { ChevronDown, Lock, CreditCard, LogOut, ArrowLeft } from 'lucide-react';
 
 interface HeaderProps {
   onNavigateToSettings?: (tab?: string) => void;
-  onLogout?: () => void;
-  onLoginSuccess?: () => void;
-  onLogin?: (login: string, password: string) => Promise<void>;
+  onBackToLanding?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ 
   onNavigateToSettings, 
-  onLogout, 
-  onLoginSuccess,
-  onLogin 
+  onBackToLanding
 }) => {
-  const { user, logout, isAuthenticated } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,37 +33,17 @@ export const Header: React.FC<HeaderProps> = ({
     }
   };
 
-  const handleLogoutClick = async () => {
+  const handleBackToLanding = () => {
     setIsDropdownOpen(false);
-    if (onLogout) {
-      onLogout();
-    } else {
-      await logout();
-    }
-  };
-
-  const handleLoginClick = () => {
-    setShowLoginModal(true);
-  };
-
-  const handleLoginSuccess = async () => {
-    setShowLoginModal(false);
-    if (onLoginSuccess) {
-      onLoginSuccess();
-    }
-  };
-
-  const handleLogin = async (login: string, password: string) => {
-    if (onLogin) {
-      await onLogin(login, password);
-      setShowLoginModal(false);
+    if (onBackToLanding) {
+      onBackToLanding();
     }
   };
 
   const settingsMenuItems = [
     { id: 'password', label: 'Password', icon: Lock },
     { id: 'subscription', label: 'Subscription', icon: CreditCard },
-    { id: 'logout', label: 'Sign Out', icon: LogOut, divider: true }
+    { id: 'back', label: 'Back to Landing', icon: ArrowLeft, divider: true }
   ];
 
   // Get user initials for avatar
@@ -84,50 +56,11 @@ export const Header: React.FC<HeaderProps> = ({
       .slice(0, 2);
   };
 
-  const userName = user?.name || 'Sarah Mitchell';
-  const userEmail = user?.email || 'sarah@example.com';
-  const userPlan = user?.plan || 'Starter Plan';
+  const userName = 'Sarah Mitchell';
+  const userEmail = 'sarah@example.com';
+  const userPlan = 'Starter Plan';
   const userInitials = getUserInitials(userName);
 
-  // Landing page header (when not authenticated)
-  if (!isAuthenticated) {
-    return (
-      <>
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center space-x-3">
-                <img 
-                  src="/image_2025-06-28_18-28-21 (1).png" 
-                  alt="Promptaize Logo" 
-                  className="h-10 w-auto"
-                />
-                <span className="text-xl font-bold text-gray-900">Promptaize</span>
-              </div>
-              
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={handleLoginClick}
-                  className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:text-orange-600 transition-colors"
-                >
-                  <LogIn className="h-4 w-4" />
-                  <span>Login</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <LoginModal 
-          isOpen={showLoginModal}
-          onClose={() => setShowLoginModal(false)}
-          onLogin={handleLogin}
-        />
-      </>
-    );
-  }
-
-  // Dashboard header (when authenticated)
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -183,13 +116,13 @@ export const Header: React.FC<HeaderProps> = ({
                       <div key={item.id}>
                         {item.divider && <div className="border-t border-gray-100 my-2"></div>}
                         <button
-                          onClick={item.id === 'logout' ? handleLogoutClick : () => handleSettingsClick(item.id)}
+                          onClick={item.id === 'back' ? handleBackToLanding : () => handleSettingsClick(item.id)}
                           className={`w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors ${
-                            item.id === 'logout' ? 'text-red-600' : 'text-gray-700'
+                            item.id === 'back' ? 'text-orange-600' : 'text-gray-700'
                           }`}
                         >
                           <Icon className={`w-4 h-4 ${
-                            item.id === 'logout' ? 'text-red-500' : 'text-gray-500'
+                            item.id === 'back' ? 'text-orange-500' : 'text-gray-500'
                           }`} />
                           <span className="text-sm font-medium">{item.label}</span>
                         </button>
