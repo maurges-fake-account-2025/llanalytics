@@ -1,13 +1,12 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import { analysisAPI, AnalysisRequest, AnalysisResponse } from '../services/api';
-import { authAPI } from '../services/auth';
 
 interface AnalysisContextState {
   data: AnalysisResponse | null;
   loading: boolean;
   error: string | null;
   lastAnalyzed: string | null;
-  analyzeWebsite: (request: Omit<AnalysisRequest, 'token'>) => Promise<AnalysisResponse>;
+  analyzeWebsite: (request: AnalysisRequest) => Promise<AnalysisResponse>;
   clearError: () => void;
   clearData: () => void;
 }
@@ -43,17 +42,12 @@ export const AnalysisProvider: React.FC<AnalysisProviderProps> = ({ children }) 
     }
   }, []);
 
-  const analyzeWebsite = useCallback(async (request: Omit<AnalysisRequest, 'token'>) => {
+  const analyzeWebsite = useCallback(async (request: AnalysisRequest) => {
     setLoading(true);
     setError(null);
     
     try {
-      // Check if user is authenticated
-      if (!authAPI.isAuthenticated()) {
-        throw new Error('Authentication required. Please log in.');
-      }
-
-      const result = await analysisAPI.analyzeWebsite(request as AnalysisRequest);
+      const result = await analysisAPI.analyzeWebsite(request);
       const timestamp = new Date().toLocaleString();
       
       // Update state

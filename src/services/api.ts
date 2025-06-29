@@ -1,12 +1,9 @@
-import { authAPI } from './auth';
-
 export interface AnalysisRequest {
   category: string;
   brandName: string;
   location: string;
   keywords: string[];
   website: string;
-  token?: string;
 }
 
 export interface SentimentData {
@@ -54,28 +51,15 @@ export class AnalysisAPI {
 
   async analyzeWebsite(data: AnalysisRequest): Promise<AnalysisResponse> {
     try {
-      // Get the current auth token
-      const token = authAPI.getToken();
-      
-      // Add token to request body
-      const requestData = {
-        ...data,
-        token: token
-      };
-
       const response = await fetch(`${this.baseUrl}/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestData),
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
-        // Handle authentication errors
-        if (response.status === 401) {
-          throw new Error('Authentication required. Please log in again.');
-        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
