@@ -8,9 +8,13 @@ import { Optimization } from './components/Optimization/Optimization';
 import { PersonalSettings } from './components/PersonalSettings/PersonalSettings';
 import LandingPage from './components/LandingPage';
 import { AnalysisProvider } from './contexts/AnalysisContext';
+import { useAuth } from './contexts/AuthContext';
+import { WaitlistModal } from './components/WaitlistModal';
 
 const AppContent: React.FC = () => {
+  const { user, loading } = useAuth();
   const [showDashboard, setShowDashboard] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [activeModule, setActiveModule] = useState('dashboard');
   const [brandName, setBrandName] = useState('Hermès');
   const [url, setUrl] = useState('hermes.com');
@@ -25,7 +29,13 @@ const AppContent: React.FC = () => {
   };
 
   const handleOpenDashboard = () => {
-    setShowDashboard(true);
+    if (!user) {
+      // Show login modal if user is not authenticated
+      setShowLoginModal(true);
+    } else {
+      // User is authenticated, proceed to dashboard
+      setShowDashboard(true);
+    }
   };
 
   const handleBackToLanding = () => {
@@ -35,6 +45,11 @@ const AppContent: React.FC = () => {
     setBrandName('Hermès');
     setUrl('hermes.com');
     setIndustry('Fashion');
+  };
+
+  const handleLoginSuccess = () => {
+    setShowLoginModal(false);
+    setShowDashboard(true);
   };
 
   const renderModule = () => {
@@ -54,12 +69,34 @@ const AppContent: React.FC = () => {
     }
   };
 
-  // Show landing page if dashboard is not open
-  if (!showDashboard) {
-    return <LandingPage onOpenDashboard={handleOpenDashboard} />;
+  if (loading) {
+    return (
+      <div className="h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
-  // Show main application if dashboard is open
+  // Show landing page if dashboard is not open
+  if (!showDashboard) {
+    return (
+      <>
+        <LandingPage onOpenDashboard={handleOpenDashboard} />
+        {showLoginModal && (
+          <WaitlistModal
+            isOpen={showLoginModal}
+            onClose={() => setShowLoginModal(false)}
+            onSuccess={handleLoginSuccess}
+          />
+        )}
+      </>
+    );
+  }
+
+  // Show main application if dashboard is open and user is authenticated
   return (
     <AnalysisProvider>
       <div className="h-screen bg-gray-50 flex">
