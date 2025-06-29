@@ -56,8 +56,8 @@ export const Header: React.FC<HeaderProps> = ({
       .slice(0, 2);
   };
 
-  const userName = 'Sarah Mitchell';
-  const userEmail = 'sarah@example.com';
+  const userName = 'Bolt User';
+  const userEmail = 'boltuser@example.com';
   const userPlan = 'Starter Plan';
   const userInitials = getUserInitials(userName);
 
