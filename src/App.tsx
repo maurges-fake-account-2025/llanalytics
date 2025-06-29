@@ -6,7 +6,7 @@ import { Dashboard } from './components/Dashboard/Dashboard';
 import { NicheAnalysis } from './components/NicheAnalysis/NicheAnalysis';
 import { Optimization } from './components/Optimization/Optimization';
 import { PersonalSettings } from './components/PersonalSettings/PersonalSettings';
-import { LandingPage } from './components/LandingPage';
+import LandingPage from './components/LandingPage';
 import { AnalysisProvider } from './contexts/AnalysisContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
