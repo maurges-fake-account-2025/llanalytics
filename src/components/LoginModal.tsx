@@ -25,7 +25,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => 
       setUsername('')
       setPassword('')
     } catch (err) {
-      setError('Invalid credentials. Please try again.')
+      // Always show a user-friendly error message regardless of the backend error
+      setError('Invalid username or password. Please try again.')
     } finally {
       setIsLoading(false)
     }
