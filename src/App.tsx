@@ -25,9 +25,9 @@ const AppContent: React.FC = () => {
     }
   };
 
-  const handleLogin = async (login: string, password: string) => {
+  const handleLogin = async (username: string, password: string) => {
     clearError();
-    await login(login, password);
+    await login(username, password);
   };
 
   const handleLogout = async () => {
