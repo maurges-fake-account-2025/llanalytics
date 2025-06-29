@@ -27,7 +27,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeModule, onModuleChange }
       .slice(0, 2);
   };
 
-  const userName = 'Sarah Mitchell';
+  const userName = 'Bolt User';
   const userPlan = 'Starter Plan';
   const userInitials = getUserInitials(userName);
 
