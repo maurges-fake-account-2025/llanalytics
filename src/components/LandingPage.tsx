@@ -196,8 +196,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenDashboard }) => {
                 className="flex items-center space-x-2 px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium"
               >
                 <BarChart3 className="h-4 w-4" />
-                <span>Open Dashboard</span>
+                <span>Try Dashboard</span>
               </button>
+              
+              <div className="flex items-center">
+                <img 
+                  src="/white_circle_360x360.png" 
+                  alt="Powered by Bolt.new" 
+                  className="h-10 w-10 rounded-full shadow-sm"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -266,20 +274,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenDashboard }) => {
                 </div>
               </div>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 max-w-md">
-                <button
-                  onClick={onOpenDashboard}
-                  className="flex-1 px-6 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-xl hover:from-orange-700 hover:to-red-700 transition-all font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2"
-                >
-                  <BarChart3 className="h-5 w-5" />
-                  <span>Try Dashboard</span>
-                </button>
+              {/* CTA Button */}
+              <div className="max-w-md">
                 <button
                   onClick={handleGetStarted}
-                  className="flex-1 px-6 py-4 bg-white border-2 border-orange-600 text-orange-600 rounded-xl hover:bg-orange-50 transition-all font-semibold text-lg"
+                  className="w-full px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-xl hover:from-orange-700 hover:to-red-700 transition-all font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
-                  Join Waitlist
+                  Optimize your search visibility now
                 </button>
               </div>
             </div>
@@ -630,21 +631,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenDashboard }) => {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button 
-              onClick={onOpenDashboard}
-              className="bg-white text-black px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all shadow-lg flex items-center justify-center space-x-2"
-            >
-              <BarChart3 className="h-5 w-5" />
-              <span>Try Dashboard</span>
-            </button>
-            <button 
-              onClick={handleGetStarted}
-              className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-black transition-all"
-            >
-              Join Waitlist
-            </button>
-          </div>
+          <button 
+            onClick={handleGetStarted}
+            className="bg-white text-black px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all shadow-lg"
+          >
+            Join Waitlist
+          </button>
         </WavyBackground>
       </section>
 
