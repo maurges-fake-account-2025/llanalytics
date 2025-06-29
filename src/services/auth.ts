@@ -68,7 +68,7 @@ export class AuthAPI {
           token: data.token,
           user: {
             id: '1',
-            name: 'Sarah Mitchell',
+            name: 'Bolt User',
             email: credentials.login,
             plan: 'Starter Plan'
           }
