@@ -9,6 +9,18 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onLogin }) => {
   const [showLoginModal, setShowLoginModal] = useState(false)
 
+  const handleLogin = async (username: string, password: string) => {
+    console.log('Header: handleLogin called with:', { username, password });
+    try {
+      await onLogin(username, password);
+      console.log('Header: Login successful, closing modal');
+      setShowLoginModal(false);
+    } catch (error) {
+      console.error('Header: Login failed:', error);
+      throw error; // Re-throw to let the modal handle the error display
+    }
+  };
+
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
@@ -47,7 +59,7 @@ const Header: React.FC<HeaderProps> = ({ onLogin }) => {
       <LoginModal 
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
-        onLogin={onLogin}
+        onLogin={handleLogin}
       />
     </>
   )

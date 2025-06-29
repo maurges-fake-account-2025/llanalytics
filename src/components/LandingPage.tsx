@@ -73,6 +73,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess, onLogin }) =>
     setShowWaitlistModal(true)
   }
 
+  // Handle login from header
+  const handleLogin = async (login: string, password: string) => {
+    console.log('LandingPage: handleLogin called with:', { login, password });
+    try {
+      await onLogin(login, password);
+      console.log('LandingPage: Login successful, calling onLoginSuccess');
+      onLoginSuccess();
+    } catch (error) {
+      console.error('LandingPage: Login failed:', error);
+      throw error; // Re-throw to let the modal handle the error display
+    }
+  };
+
   const features = [
     {
       icon: <BarChart3 className="h-8 w-8 text-orange-600" />,
@@ -180,7 +193,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess, onLogin }) =>
   return (
     <div className="min-h-screen bg-white">
       {/* Header Component */}
-      <Header onLogin={onLogin} />
+      <Header onLogin={handleLogin} />
 
       {/* Hero Section */}
       <section className="pt-24 pb-16 bg-gradient-to-br from-slate-50 via-white to-gray-50 overflow-hidden">
