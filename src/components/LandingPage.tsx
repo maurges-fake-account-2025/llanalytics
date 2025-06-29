@@ -22,10 +22,11 @@ import { WavyBackground } from './ui/wavy-background'
 import { PlaceholdersAndVanishInput } from './ui/placeholders-and-vanish-input'
 
 interface LandingPageProps {
-  onLogin: (username: string, password: string) => Promise<void>
+  onLoginSuccess: () => void;
+  onLogin: (login: string, password: string) => Promise<void>;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess, onLogin }) => {
   const [email, setEmail] = useState('')
   const [showWaitlistModal, setShowWaitlistModal] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState<string>('')

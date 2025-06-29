@@ -16,10 +16,13 @@ export interface LoginResponse {
 }
 
 export class AuthAPI {
-  private baseUrl = import.meta.env.DEV ? '/api' : 'https://random.test.morj.men';
+  private baseUrl = 'https://random.test.morj.men';
 
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {
+      console.log('Sending login request to:', `${this.baseUrl}/auth/login`);
+      console.log('Credentials:', credentials);
+
       const response = await fetch(`${this.baseUrl}/auth/login`, {
         method: 'POST',
         headers: {
@@ -28,19 +31,46 @@ export class AuthAPI {
         body: JSON.stringify(credentials),
       });
 
+      console.log('Response status:', response.status);
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // Try to get error message from response
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = await response.text();
+          if (errorData) {
+            errorMessage = errorData;
+          }
+        } catch (e) {
+          // Ignore parsing errors
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
+      console.log('Login response:', data);
       
-      // Store opaque token if login successful
-      if (data.success && data.token) {
-        localStorage.setItem('authToken', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-      }
+      // Handle the simple token response format
+      if (data.token) {
+        const loginResponse: LoginResponse = {
+          success: true,
+          token: data.token,
+          user: {
+            id: '1',
+            name: 'Sarah Mitchell',
+            email: credentials.login,
+            plan: 'Starter Plan'
+          }
+        };
 
-      return data;
+        // Store token and user data
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('user', JSON.stringify(loginResponse.user));
+
+        return loginResponse;
+      } else {
+        throw new Error('Invalid response format');
+      }
     } catch (error) {
       console.error('Login request failed:', error);
       throw error;
