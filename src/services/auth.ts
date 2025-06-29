@@ -16,7 +16,7 @@ export interface LoginResponse {
 }
 
 export class AuthAPI {
-  private baseUrl = 'https://random.test.morj.men';
+  private baseUrl = '/api';
 
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {
