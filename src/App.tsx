@@ -27,7 +27,14 @@ const AppContent: React.FC = () => {
 
   const handleLogin = async (username: string, password: string) => {
     clearError();
-    await login(username, password);
+    try {
+      await login(username, password);
+      // No need to do anything here - the auth context will update isAuthenticated
+      // and the component will automatically re-render to show the dashboard
+    } catch (error) {
+      console.error('Login failed:', error);
+      throw error; // Re-throw to let the calling component handle the error
+    }
   };
 
   const handleLogout = async () => {
@@ -40,8 +47,9 @@ const AppContent: React.FC = () => {
   };
 
   const handleLoginSuccess = () => {
-    // This will be called when login is successful from the landing page
-    console.log('Login successful from landing page');
+    // This callback is called when login is successful
+    // The auth context will automatically update isAuthenticated
+    console.log('Login successful - user will be redirected to dashboard');
   };
 
   const renderModule = () => {
