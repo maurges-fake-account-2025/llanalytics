@@ -66,7 +66,32 @@ export class AnalysisAPI {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        
+        try {
+          // Try to parse the response body as JSON first
+          const errorData = await response.json();
+          if (errorData.message) {
+            errorMessage = errorData.message;
+          } else if (errorData.error) {
+            errorMessage = errorData.error;
+          } else if (typeof errorData === 'string') {
+            errorMessage = errorData;
+          }
+        } catch (jsonError) {
+          // If JSON parsing fails, try to get the response as text
+          try {
+            const errorText = await response.text();
+            if (errorText) {
+              errorMessage = errorText;
+            }
+          } catch (textError) {
+            // If both fail, use the status text or a generic message
+            errorMessage = response.statusText || `Request failed with status ${response.status}`;
+          }
+        }
+        
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
