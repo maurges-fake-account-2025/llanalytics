@@ -29,8 +29,9 @@ const AppContent: React.FC = () => {
     clearError();
     try {
       await login(username, password);
-      // No need to do anything here - the auth context will update isAuthenticated
-      // and the component will automatically re-render to show the dashboard
+      // The auth context will automatically update isAuthenticated
+      // and this component will re-render to show the dashboard
+      console.log('Login successful - user will be redirected to dashboard');
     } catch (error) {
       console.error('Login failed:', error);
       throw error; // Re-throw to let the calling component handle the error
@@ -44,12 +45,6 @@ const AppContent: React.FC = () => {
     setBrandName('Hermès');
     setUrl('hermes.com');
     setIndustry('Fashion');
-  };
-
-  const handleLoginSuccess = () => {
-    // This callback is called when login is successful
-    // The auth context will automatically update isAuthenticated
-    console.log('Login successful - user will be redirected to dashboard');
   };
 
   const renderModule = () => {
@@ -83,7 +78,7 @@ const AppContent: React.FC = () => {
 
   // Show landing page if not authenticated
   if (!isAuthenticated) {
-    return <LandingPage onLoginSuccess={handleLoginSuccess} onLogin={handleLogin} />;
+    return <LandingPage onLogin={handleLogin} />;
   }
 
   // Show main application if authenticated

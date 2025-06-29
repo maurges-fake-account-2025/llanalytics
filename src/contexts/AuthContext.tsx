@@ -36,6 +36,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (authAPI.isAuthenticated()) {
           const userData = authAPI.getUser();
           if (userData) {
+            console.log('AuthContext: Found existing user data:', userData);
             setUser(userData);
           }
         }
@@ -52,6 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = useCallback(async (login: string, password: string) => {
+    console.log('AuthContext: Login attempt for:', login);
     setLoading(true);
     setError(null);
     
@@ -59,12 +61,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await authAPI.login({ login, password });
       
       if (response.success && response.user) {
+        console.log('AuthContext: Login successful, setting user:', response.user);
         setUser(response.user);
       } else {
         throw new Error(response.message || 'Login failed');
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      console.error('AuthContext: Login failed:', errorMessage);
       setError(errorMessage);
       throw error;
     } finally {
@@ -73,11 +77,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const logout = useCallback(async () => {
+    console.log('AuthContext: Logout called');
     setLoading(true);
     try {
       await authAPI.logout();
       setUser(null);
       setError(null);
+      console.log('AuthContext: Logout successful');
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
@@ -98,6 +104,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     clearError,
   };
+
+  console.log('AuthContext: Current state:', { 
+    isAuthenticated: !!user, 
+    loading, 
+    user: user?.name || 'none' 
+  });
 
   return (
     <AuthContext.Provider value={value}>

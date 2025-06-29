@@ -22,11 +22,10 @@ import { WavyBackground } from './ui/wavy-background'
 import { PlaceholdersAndVanishInput } from './ui/placeholders-and-vanish-input'
 
 interface LandingPageProps {
-  onLoginSuccess: () => void;
   onLogin: (login: string, password: string) => Promise<void>;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess, onLogin }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
   const [email, setEmail] = useState('')
   const [showWaitlistModal, setShowWaitlistModal] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState<string>('')
@@ -73,13 +72,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess, onLogin }) =>
     setShowWaitlistModal(true)
   }
 
-  // Handle login from header
+  // Handle login from header - just pass it through
   const handleLogin = async (login: string, password: string) => {
     console.log('LandingPage: handleLogin called with:', { login, password });
     try {
       await onLogin(login, password);
-      console.log('LandingPage: Login successful, calling onLoginSuccess');
-      onLoginSuccess();
+      console.log('LandingPage: Login successful');
+      // No need to do anything else - the App component will handle the redirect
     } catch (error) {
       console.error('LandingPage: Login failed:', error);
       throw error; // Re-throw to let the modal handle the error display
