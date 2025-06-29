@@ -15,6 +15,7 @@ const AppContent: React.FC = () => {
   const [brandName, setBrandName] = useState('Hermès');
   const [url, setUrl] = useState('hermes.com');
   const [industry, setIndustry] = useState('Fashion');
+  const [keywords, setKeywords] = useState<string[]>([]);
   const [activeSettingsTab, setActiveSettingsTab] = useState('account');
 
   const handleNavigateToSettings = (tab?: string) => {
@@ -35,10 +36,11 @@ const AppContent: React.FC = () => {
     setBrandName('Hermès');
     setUrl('hermes.com');
     setIndustry('Fashion');
+    setKeywords([]);
   };
 
   const renderModule = () => {
-    const commonProps = { brandName, url, industry };
+    const commonProps = { brandName, url, industry, keywords };
     
     switch (activeModule) {
       case 'dashboard':
@@ -74,6 +76,8 @@ const AppContent: React.FC = () => {
               setUrl={setUrl}
               industry={industry}
               setIndustry={setIndustry}
+              keywords={keywords}
+              setKeywords={setKeywords}
             />
           )}
           <main className="flex-1 overflow-y-auto">

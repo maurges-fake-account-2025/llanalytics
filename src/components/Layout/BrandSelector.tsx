@@ -1,5 +1,5 @@
-import React from 'react';
-import { Building2, Globe, ChevronDown } from 'lucide-react';
+import React, { useState } from 'react';
+import { Building2, Globe, ChevronDown, Tag, X } from 'lucide-react';
 
 interface BrandSelectorProps {
   brandName: string;
@@ -8,6 +8,8 @@ interface BrandSelectorProps {
   setUrl: (url: string) => void;
   industry: string;
   setIndustry: (industry: string) => void;
+  keywords: string[];
+  setKeywords: (keywords: string[]) => void;
 }
 
 const industries = [
@@ -47,13 +49,31 @@ export const BrandSelector: React.FC<BrandSelectorProps> = ({
   url,
   setUrl,
   industry,
-  setIndustry
+  setIndustry,
+  keywords,
+  setKeywords
 }) => {
-  const [selectedRegion, setSelectedRegion] = React.useState('global');
+  const [selectedRegion, setSelectedRegion] = useState('global');
+  const [keywordInput, setKeywordInput] = useState('');
 
   const handleRegionChange = (regionId: string) => {
     setSelectedRegion(regionId);
     console.log('Region changed to:', regionId);
+  };
+
+  const handleKeywordAdd = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && keywordInput.trim() && keywords.length < 3) {
+      e.preventDefault();
+      const newKeyword = keywordInput.trim();
+      if (!keywords.includes(newKeyword)) {
+        setKeywords([...keywords, newKeyword]);
+      }
+      setKeywordInput('');
+    }
+  };
+
+  const handleKeywordRemove = (indexToRemove: number) => {
+    setKeywords(keywords.filter((_, index) => index !== indexToRemove));
   };
 
   const currentRegion = regions.find(r => r.id === selectedRegion) || regions[0];
@@ -96,6 +116,40 @@ export const BrandSelector: React.FC<BrandSelectorProps> = ({
               ))}
             </select>
             <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+          </div>
+
+          {/* Keywords Input */}
+          <div className="flex items-center space-x-2">
+            <Tag className="w-5 h-5 text-gray-500" />
+            <div className="flex flex-col space-y-2">
+              <input
+                type="text"
+                value={keywordInput}
+                onChange={(e) => setKeywordInput(e.target.value)}
+                onKeyDown={handleKeywordAdd}
+                placeholder={keywords.length < 3 ? "Add keyword (press Enter)" : "Max 3 keywords"}
+                disabled={keywords.length >= 3}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+              />
+              {keywords.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {keywords.map((keyword, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800"
+                    >
+                      {keyword}
+                      <button
+                        onClick={() => handleKeywordRemove(index)}
+                        className="ml-1 text-orange-600 hover:text-orange-800"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

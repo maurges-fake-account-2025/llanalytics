@@ -6,6 +6,7 @@ interface OptimizationProps {
   brandName: string;
   url: string;
   industry: string;
+  keywords: string[];
 }
 
 interface OptimizationFactor {
@@ -29,7 +30,7 @@ interface OptimizationItem {
   section: string;
 }
 
-export const Optimization: React.FC<OptimizationProps> = ({ brandName, url, industry }) => {
+export const Optimization: React.FC<OptimizationProps> = ({ brandName, url, industry, keywords }) => {
   const { data: analysisData, loading, error, isRateLimit, lastAnalyzed, analyzeWebsite } = useAnalysisContext();
   const [hoveredFactor, setHoveredFactor] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -172,7 +173,7 @@ export const Optimization: React.FC<OptimizationProps> = ({ brandName, url, indu
         category: industry,
         brandName: brandName,
         location: 'Global',
-        keywords: [],
+        keywords: keywords,
         website: url.startsWith('http') ? url : `https://${url}`,
       });
     } catch (error) {
@@ -514,7 +515,24 @@ export const Optimization: React.FC<OptimizationProps> = ({ brandName, url, indu
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Optimization</h1>
-          <p className="text-gray-600 mt-1">LLM-focused optimization checklist for {brandName}</p>
+          <div className="flex items-center space-x-4 mt-1">
+            <p className="text-gray-600">LLM-focused optimization checklist for {brandName}</p>
+            {keywords.length > 0 && (
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-500">Keywords:</span>
+                <div className="flex space-x-1">
+                  {keywords.map((keyword, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800"
+                    >
+                      {keyword}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
           {lastAnalyzed && (
             <p className="text-sm text-gray-500 mt-1">Last analyzed: {lastAnalyzed}</p>
           )}
