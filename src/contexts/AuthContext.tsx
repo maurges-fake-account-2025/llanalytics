@@ -64,13 +64,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log('AuthContext: Login successful, setting user:', response.user);
         setUser(response.user);
       } else {
-        throw new Error(response.message || 'Login failed');
+        const errorMessage = response.message || 'Login failed';
+        console.error('AuthContext: Login failed:', errorMessage);
+        setError(errorMessage);
+        throw new Error(errorMessage);
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Login failed';
-      console.error('AuthContext: Login failed:', errorMessage);
+      // If it's already our custom error, re-throw it
+      if (error instanceof Error) {
+        throw error;
+      }
+      // Otherwise, create a generic error
+      const errorMessage = 'An unexpected error occurred';
       setError(errorMessage);
-      throw error;
+      throw new Error(errorMessage);
     } finally {
       setLoading(false);
     }

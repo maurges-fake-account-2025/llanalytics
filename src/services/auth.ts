@@ -35,16 +35,27 @@ export class AuthAPI {
 
       if (!response.ok) {
         // Try to get error message from response
-        let errorMessage = `HTTP error! status: ${response.status}`;
+        let errorMessage = 'Login failed';
         try {
-          const errorData = await response.text();
-          if (errorData) {
-            errorMessage = errorData;
-          }
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorData.error || errorMessage;
         } catch (e) {
-          // Ignore parsing errors
+          // If JSON parsing fails, try to get plain text
+          try {
+            const textData = await response.text();
+            if (textData) {
+              errorMessage = textData;
+            }
+          } catch (textError) {
+            // Use default message if both JSON and text parsing fail
+            errorMessage = `Authentication failed (${response.status})`;
+          }
         }
-        throw new Error(errorMessage);
+        
+        return {
+          success: false,
+          message: errorMessage
+        };
       }
 
       const data = await response.json();
@@ -69,11 +80,17 @@ export class AuthAPI {
 
         return loginResponse;
       } else {
-        throw new Error('Invalid response format');
+        return {
+          success: false,
+          message: data.message || 'Invalid response format'
+        };
       }
     } catch (error) {
       console.error('Login request failed:', error);
-      throw error;
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Network error occurred'
+      };
     }
   }
 
