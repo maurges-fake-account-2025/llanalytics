@@ -5,6 +5,7 @@ interface AnalysisContextState {
   data: AnalysisResponse | null;
   loading: boolean;
   error: string | null;
+  isRateLimit: boolean;
   lastAnalyzed: string | null;
   analyzeWebsite: (request: AnalysisRequest) => Promise<AnalysisResponse>;
   clearError: () => void;
@@ -21,6 +22,7 @@ export const AnalysisProvider: React.FC<AnalysisProviderProps> = ({ children }) 
   const [data, setData] = useState<AnalysisResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isRateLimit, setIsRateLimit] = useState(false);
   const [lastAnalyzed, setLastAnalyzed] = useState<string | null>(null);
 
   // Load persisted data on mount
@@ -45,6 +47,7 @@ export const AnalysisProvider: React.FC<AnalysisProviderProps> = ({ children }) 
   const analyzeWebsite = useCallback(async (request: AnalysisRequest) => {
     setLoading(true);
     setError(null);
+    setIsRateLimit(false);
     
     try {
       const result = await analysisAPI.analyzeWebsite(request);
@@ -66,8 +69,17 @@ export const AnalysisProvider: React.FC<AnalysisProviderProps> = ({ children }) 
       setLoading(false);
       return result;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Analysis failed';
+      let errorMessage = 'Analysis failed';
+      let isRateLimitError = false;
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+        // Check if this is a rate limit error
+        isRateLimitError = (error as any).isRateLimit === true;
+      }
+
       setError(errorMessage);
+      setIsRateLimit(isRateLimitError);
       setLoading(false);
       throw error;
     }
@@ -90,11 +102,13 @@ export const AnalysisProvider: React.FC<AnalysisProviderProps> = ({ children }) 
 
   const clearError = useCallback(() => {
     setError(null);
+    setIsRateLimit(false);
   }, []);
 
   const clearData = useCallback(() => {
     setData(null);
     setError(null);
+    setIsRateLimit(false);
     setLastAnalyzed(null);
     localStorage.removeItem('analysisData');
     localStorage.removeItem('analysisTimestamp');
@@ -107,6 +121,7 @@ export const AnalysisProvider: React.FC<AnalysisProviderProps> = ({ children }) 
     data,
     loading,
     error,
+    isRateLimit,
     lastAnalyzed,
     analyzeWebsite,
     clearError,

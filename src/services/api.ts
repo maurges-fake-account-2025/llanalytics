@@ -1,3 +1,5 @@
+import { authAPI } from './auth';
+
 export interface AnalysisRequest {
   category: string;
   brandName: string;
@@ -46,6 +48,10 @@ export interface AnalysisResponse {
   visibility: VisibilityBreakdown;
 }
 
+export interface RateLimitError {
+  rateLimitReached: true;
+}
+
 export class AnalysisAPI {
   private baseUrl = import.meta.env.DEV ? '/api' : 'https://random.test.morj.men';
 
@@ -63,7 +69,16 @@ export class AnalysisAPI {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      return await response.json();
+      const result = await response.json();
+
+      // Check if the response indicates rate limit reached
+      if (result.rateLimitReached === true) {
+        const error = new Error('Rate limit exceeded. Please try again later.');
+        (error as any).isRateLimit = true;
+        throw error;
+      }
+
+      return result;
     } catch (error) {
       console.error('API request failed:', error);
       throw error;

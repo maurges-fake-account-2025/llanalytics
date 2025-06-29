@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, TrendingDown, Search, Target, Minus, RefreshCw, AlertCircle, MoreVertical } from 'lucide-react';
+import { TrendingUp, TrendingDown, Search, Target, Minus, RefreshCw, AlertCircle, Clock, Zap, MoreVertical } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useAnalysisContext } from '../../contexts/AnalysisContext';
 
@@ -10,7 +10,7 @@ interface NicheAnalysisProps {
 }
 
 export const NicheAnalysis: React.FC<NicheAnalysisProps> = ({ brandName, url, industry }) => {
-  const { data: analysisData, loading, error, lastAnalyzed, analyzeWebsite } = useAnalysisContext();
+  const { data: analysisData, loading, error, isRateLimit, lastAnalyzed, analyzeWebsite } = useAnalysisContext();
 
   // Transform real data if available - ensure we have exactly 4 platforms
   const brandVisibility = analysisData ? 
@@ -207,8 +207,27 @@ export const NicheAnalysis: React.FC<NicheAnalysisProps> = ({ brandName, url, in
         </button>
       </div>
 
-      {/* Error Display */}
-      {error && (
+      {/* Rate Limit Error Display */}
+      {isRateLimit && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+          <div className="flex items-start space-x-3">
+            <Clock className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-amber-800 font-medium">Rate Limit Reached</p>
+              <p className="text-amber-700 text-sm mt-1">
+                You've reached the maximum number of analysis requests for now. Please try again in a few minutes.
+              </p>
+              <div className="mt-3 flex items-center space-x-2 text-amber-700">
+                <Zap className="w-4 h-4" />
+                <span className="text-sm font-medium">Tip: Upgrade to Pro for higher rate limits and priority processing</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Regular Error Display */}
+      {error && !isRateLimit && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <div className="flex items-center space-x-2">
             <AlertCircle className="w-5 h-5 text-red-600" />
